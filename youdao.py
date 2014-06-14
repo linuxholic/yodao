@@ -50,7 +50,7 @@ NORMAL = "\033[m";
 RED = "\033[1;31m"
 def crawl_xml(queryword):
 	return urllib2.urlopen("http://dict.yodao.com/search?q="
-        + urllib.quote_plus(queryword) + "&doctype=xml").read();
+        + urllib.quote_plus(queryword) + "&xmlDetail=true&doctype=xml").read();
 def print_translations(xml, with_color, detailed):
 
 	root = ET.fromstring(xml);
@@ -64,13 +64,16 @@ def print_translations(xml, with_color, detailed):
 	for cus in custom_translations:
 		source = cus.find("source/name");
 		print RED + "Translations from " + source.text + DEFAULT;
-		contents = cus.findall("translation/content");
+		contents = [];
+		for content in cus.iterfind("translation/content"):
+			contents.append(content.text);
+
 		if with_color:
 			for content in contents[0:5]:
-				print GREEN + content.text + DEFAULT;
+				print GREEN + content + DEFAULT;
 		else:
 			for content in contents[0:5]:
-				print content.text;
+				print content;
 		translated = True;
 
 	yodao_translations = root.findall("yodao-web-dict");
