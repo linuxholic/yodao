@@ -52,27 +52,34 @@ def crawl_xml(queryword):
 	return urllib2.urlopen("http://dict.yodao.com/search?keyfrom=dict.python&q="
         + urllib.quote_plus(queryword) + "&xmlDetail=true&doctype=xml").read();
 def print_translations(xml, with_color, detailed):
-        #print xml;
+
 	#original_query = get_elements(xml, "original-query");
-	tree = ET.fromstring(xml);
-	original_query = tree.find("original-query");
+	root = ET.fromstring(xml);
+	original_query = root.find("original-query");
 	#queryword = get_text(original_query[0]);
 	queryword = original_query.text;
-	custom_translations = get_elements(xml, "custom-translation");
+
+	#custom_translations = get_elements(xml, "custom-translation");
+	custom_translations = root.findall("custom-translation");
 	print BOLD + UNDERLINE + queryword + NORMAL;
 	translated = False;
 	
 	for cus in custom_translations:
-		source = get_elements_by_path(cus, "source/name");
+		#source = get_elements_by_path(cus, "source/name");
+		source = cus.find("source/name");
 		
-		print RED + "Translations from " + source[0] + DEFAULT;
-		contents = get_elements_by_path(cus, "translation/content");
+		#print RED + "Translations from " + source[0] + DEFAULT;
+		print RED + "Translations from " + source.text + DEFAULT;
+		#contents = get_elements_by_path(cus, "translation/content");
+		contents = cus.findall("translation/content");
 		if with_color:
 			for content in contents[0:5]:
-				print GREEN + get_text(content) + DEFAULT;
+				#print GREEN + get_text(content) + DEFAULT;
+				print GREEN + content.text + DEFAULT;
 		else:
 			for content in contents[0:5]:
-				print get_text(content);
+				#print get_text(content);
+				print content.text;
 		translated = True;
 
 	yodao_translations = get_elements(xml, "yodao-web-dict");
