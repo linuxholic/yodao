@@ -65,7 +65,7 @@ def print_translations(xml, with_color, detailed):
 		source = cus.find("source/name");
 		print RED + "Translations from " + source.text + DEFAULT;
 		contents = [];
-		for content in cus.iterfind("translation/content"):
+		for content in cus.iterfind(".//content"):
 			contents.append(content.text);
 
 		if with_color:
