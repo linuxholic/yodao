@@ -14,7 +14,7 @@ RED = "\033[1;31m"
 def crawl_xml(queryword):
 	return urllib2.urlopen("http://dict.yodao.com/search?q="
         + urllib.quote_plus(queryword) + "&xmlDetail=true&doctype=xml").read();
-def print_translations(xml, with_color):
+def print_translations(xml):
 
 	root = ET.fromstring(xml);
 	original_query = root.find("original-query");
@@ -25,16 +25,8 @@ def print_translations(xml, with_color):
 	
 	source = cus.find("source/name");
 	print RED + "Translations from " + source.text + DEFAULT;
-	contents = [];
 	for content in cus.iterfind(".//content"):
-		contents.append(content.text);
-
-	if with_color:
-		for content in contents[0:5]:
-			print GREEN + content + DEFAULT;
-	else:
-		for content in contents[0:5]:
-			print content;
+		print GREEN + content.text + DEFAULT;
 
 def usage():
 	print "usage: dict.py word_to_translate";
@@ -44,7 +36,7 @@ def main(argv):
 		usage();
 		sys.exit(1);
 	xml = crawl_xml(" ".join(argv));
-	print_translations(xml, True);
+	print_translations(xml);
 
 if __name__ == "__main__":
 	main(sys.argv[1:]);
