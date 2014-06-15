@@ -20,41 +20,22 @@ def print_translations(xml, with_color):
 	original_query = root.find("original-query");
 	queryword = original_query.text;
 
-	custom_translations = root.findall("custom-translation");
+	cus = root.find("custom-translation");
 	print BOLD + UNDERLINE + queryword + NORMAL;
 	
-	for cus in custom_translations:
-		source = cus.find("source/name");
-		print RED + "Translations from " + source.text + DEFAULT;
-		contents = [];
-		for content in cus.iterfind(".//content"):
-			contents.append(content.text);
+	source = cus.find("source/name");
+	print RED + "Translations from " + source.text + DEFAULT;
+	contents = [];
+	for content in cus.iterfind(".//content"):
+		contents.append(content.text);
 
-		if with_color:
-			for content in contents[0:5]:
-				print GREEN + content + DEFAULT;
-		else:
-			for content in contents[0:5]:
-				print content;
+	if with_color:
+		for content in contents[0:5]:
+			print GREEN + content + DEFAULT;
+	else:
+		for content in contents[0:5]:
+			print content;
 
-	yodao_translations = root.findall("yodao-web-dict");
-	printed = False;
-	for trans in yodao_translations:
-		webtrans = trans.findall("web-translation");
-		for web in webtrans[0:5]:
-			if not printed:
-				print RED + "Translations from yodao:" + DEFAULT;
-				printed = True;
-			key = web.find("key");
-			values = web.findall("trans/value");
-
-			key = key.text.strip();
-			value = values[0].text.strip();
-			if with_color:
-				print BOLD +  key + ":\t" + DEFAULT + GREEN + value + NORMAL;
-			else:
-				print value;
-	
 def usage():
 	print "usage: dict.py word_to_translate";
 
